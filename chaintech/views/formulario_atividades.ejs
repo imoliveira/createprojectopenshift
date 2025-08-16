@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar Novas Atividades</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Cadastrar Nova Atividade</h1>
+
+    <div class="cadastro-flex-container">
+        <div class="card formulario-atividade">
+            <form action="/atividades" method="POST">
+                <label>Data:</label>
+                <input type="date" name="data" required>
+
+                <label>Nome:</label>
+                <input type="text" name="nome" required>
+
+                <label>Principais Realizações:</label>
+                <textarea name="principais_realizacoes" rows="4" required></textarea>
+
+                <label>Projeto:</label>
+                <input type="text" name="projeto" required>
+
+                <label>Detalhamento:</label>
+                <textarea name="detalhamento" rows="6"></textarea>
+
+                <button type="submit" class="main-button">Cadastrar</button>
+            </form>
+            <a href="/" class="voltar-link">Voltar para login</a>
+        </div>
+
+        <div class="card lista-cadastros">
+            <h2>Cadastros Existentes</h2>
+
+            <div class="relatorio-actions">
+                <form action="/exportar-excel" method="GET" class="filtro-relatorio">
+                    <label for="nome_usuario">Filtrar por Usuário:</label>
+                    <input type="text" id="nome_usuario" name="nome_usuario">
+
+                    <label for="data_inicio">Data de Início:</label>
+                    <input type="date" id="data_inicio" name="data_inicio">
+
+                    <label for="data_fim">Data de Fim:</label>
+                    <input type="date" id="data_fim" name="data_fim">
+
+                    <button type="submit" class="excel-button">Gerar Relatório Excel</button>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Nome</th>
+                        <th>Projeto</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (atividades && atividades.length > 0) { %>
+                        <% atividades.forEach(atividade => { %>
+                            <tr>
+                                <td><%= atividade.id %></td>
+                                <td><%= atividade.Data.toLocaleDateString('pt-BR') %></td>
+                                <td><%= atividade.Nome %></td>
+                                <td><%= atividade.Projeto %></td>
+                                <td>
+                                    <div class="btn-container">
+                                        <a href="/atividades/editar/<%= atividade.id %>" class="btn-acao btn-editar">Editar</a>
+                                        <form action="/atividades/excluir/<%= atividade.id %>" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn-acao btn-excluir" onclick="return confirm('Excluir esta atividade?')">Excluir</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" style="text-align:center;">Nenhuma atividade cadastrada</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

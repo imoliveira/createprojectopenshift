@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  mariadb:
+    build: .
+    container_name: my-mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Ux6tqz01@
+      MYSQL_DATABASE: db_atividades
+      MYSQL_USER: user_atividades
+      MYSQL_PASSWORD: Ux6tqz01@
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql-files:/docker-entrypoint-initdb.d
+

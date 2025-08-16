@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Atividades</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0074D9;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .search-container input {
+            padding: 8px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #0074D9;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        a, button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        a {
+            background-color: #0074D9;
+            color: white;
+        }
+
+        button {
+            background-color: #FF4136;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover, a:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Lista de Atividades</h1>
+
+    <div class="search-container">
+        <input type="text" id="searchUser" placeholder="Buscar por nome...">
+    </div>
+
+    <table id="atividadesTable">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Nome</th>
+                <th>Principais Realizações</th>
+                <th>Projeto</th>
+                <th>Detalhamento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% atividades.forEach(a => { %>
+            <tr>
+                <td><%= a.Data %></td>
+                <td><%= a.Nome %></td>
+                <td><%= a['Principais Realizações'] %></td>
+                <td><%= a.Projeto %></td>
+                <td><%= a.Detalhamento %></td>
+                <td>
+                    <a href="/atividades/editar/<%= a.id %>">Editar</a>
+                    <form action="/atividades/excluir/<%= a.id %>" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Excluir esta atividade?')">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <br>
+    <a href="/formulario_atividades">Cadastrar Nova Atividade</a>
+
+    <script>
+        document.getElementById('searchUser').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#atividadesTable tbody tr');
+
+            rows.forEach(row => {
+                const nome = row.cells[1].textContent.toLowerCase();
+                row.style.display = nome.includes(searchValue) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
+

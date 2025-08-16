@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Atividade</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Editar Atividade</h1>
+    <form action="/atividades/editar/<%= atividade.id %>" method="POST">
+        <label>Data:</label>
+        <input type="date" name="data" value="<%= atividade.Data.toISOString().split('T')[0] %>" required>
+        
+        <label>Nome:</label>
+        <input type="text" name="nome" value="<%= atividade.Nome %>" required>
+        
+        <label>Principais Realizações:</label>
+        <textarea name="principais_realizacoes"><%= atividade['Principais Realizações'] %></textarea>
+        
+        <label>Projeto:</label>
+        <input type="text" name="projeto" value="<%= atividade.Projeto %>">
+        
+        <label>Detalhamento:</label>
+        <textarea name="detalhamento"><%= atividade.Detalhamento %></textarea>
+        
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>
+
