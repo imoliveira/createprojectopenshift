@@ -1,1 +1,0 @@
-# createprojectopenshift  Deu certo
