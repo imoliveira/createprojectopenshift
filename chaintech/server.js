@@ -3,126 +3,246 @@ const bodyParser = require('body-parser');
 const mariadb = require('mariadb');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const ExcelJS = require('exceljs');
 
 const app = express();
 const PORT = 3000;
 
-// --- Configuração da Aplicação ---
 
-// Configura o EJS como o motor de visualização e o diretório de templates
+require('dotenv').config();
+
+// --- Configuração da Aplicação ---
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Configuração da conexão com o banco de dados
 const pool = mariadb.createPool({
-    host: 'localhost',
-    user: 'user_atividades',
-    password: 'Ux6tqz01@',
-    database: 'db_atividades',
-    connectionLimit: 5
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  connectionLimit: 5
 });
 
-// Middleware para processar dados do formulário
+
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// Servir arquivos estáticos (CSS, JS do front-end)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- Definição das Rotas ---
+// --- Rotas ---
 
-// Rota para a página de login
+// Página de Login
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Rota de Login (POST)
+// Login
 app.post('/login', async (req, res) => {
-    let conn;
-    try {
-        const { username, password } = req.body;
-        conn = await pool.getConnection();
+    let conn;
+    try {
+        const { username, password } = req.body;
+        conn = await pool.getConnection();
 
-        const result = await conn.query("SELECT * FROM chaintech_users WHERE username = ?", [username]);
+        const result = await conn.query("SELECT * FROM chaintech_users WHERE username = ?", [username]);
 
-        if (result.length > 0) {
-            const user = result[0];
-            const match = await bcrypt.compare(password, user.password_hash);
+        if (result.length > 0) {
+            const user = result[0];
+            const match = await bcrypt.compare(password, user.password_hash);
 
-            if (match) {
-                // Login bem-sucedido, redireciona para a página de cadastro de atividades
-                res.redirect('/formulario_atividades');
-            } else {
-                res.status(401).send('Usuário ou senha inválidos.');
-            }
-        } else {
-            res.status(401).send('Usuário ou senha inválidos.');
-        }
-    } catch (err) {
-        console.error("Erro na conexão ou query:", err);
-        res.status(500).send('Erro interno do servidor.');
-    } finally {
-        if (conn) conn.release();
-    }
+            if (match) {
+                res.redirect('/formulario_atividades');
+            } else {
+                res.status(401).send('Usuário ou senha inválidos.');
+            }
+        } else {
+            res.status(401).send('Usuário ou senha inválidos.');
+        }
+    } catch (err) {
+        console.error("Erro na conexão ou query:", err);
+        res.status(500).send('Erro interno do servidor.');
+    } finally {
+        if (conn) conn.release();
+    }
 });
 
-// Rota para exibir o formulário de atividades usando EJS
-app.get('/formulario_atividades', (req, res) => {
-    res.render('formulario_atividades');
+// Formulário + Lista de Atividades (EJS)
+app.get('/formulario_atividades', async (req, res) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+ //       const atividades = await conn.query("SELECT * FROM tb_atividades ORDER BY Data DESC");
+	  const atividades = await conn.query("SELECT * FROM tb_atividades ORDER BY Data DESC LIMIT 7");
+        res.render('formulario_atividades', { atividades });
+    } catch (err) {
+        console.error("Erro ao buscar atividades:", err);
+        res.status(500).send('Erro ao carregar página de atividades.');
+    } finally {
+        if (conn) conn.release();
+    }
 });
 
-// Rota para processar o formulário e inserir na tabela tb_atividades
+// Inserir nova atividade
 app.post('/atividades', async (req, res) => {
-    let conn;
-    try {
-        const { data, nome, principais_realizacoes, projeto, detalhamento } = req.body;
-        conn = await pool.getConnection();
+    let conn;
+    try {
+        const { data, nome, principais_realizacoes, projeto, detalhamento } = req.body;
+        conn = await pool.getConnection();
 
-        const sql = `
-            INSERT INTO tb_atividades (Data, Nome, \`Principais Realizações\`, Projeto, Detalhamento)
-            VALUES (?, ?, ?, ?, ?)
-        `;
-        const values = [data, nome, principais_realizacoes, projeto, detalhamento];
-        await conn.query(sql, values);
+        await conn.query("INSERT INTO tb_atividades (Data, Nome, `Principais Realizações`, Projeto, Detalhamento) VALUES (?, ?, ?, ?, ?)", [data, nome, principais_realizacoes, projeto, detalhamento]);
 
-        // Renderiza a página de sucesso, passando os dados inseridos
-        res.render('success', { 
-            atividade: { 
-                data, 
-                nome, 
-                principais_realizacoes, 
-                projeto, 
-                detalhamento 
-            }
-        });
-    } catch (err) {
-        console.error("Erro ao inserir atividade:", err);
-        res.status(500).send('Erro interno do servidor ao cadastrar atividade.');
-    } finally {
-        if (conn) conn.release();
-    }
+        res.redirect('/formulario_atividades');
+    } catch (err) {
+        console.error("Erro ao inserir atividade:", err);
+        res.status(500).send('Erro ao cadastrar atividade.');
+    } finally {
+        if (conn) conn.release();
+    }
 });
 
-// --- Teste de Conexão e Inicialização do Servidor ---
-async function startServer() {
-    let conn;
-    try {
-        console.log('Tentando conectar ao banco de dados...');
-        conn = await pool.getConnection();
-        console.log('Conexão com o MariaDB bem-sucedida!');
+// Excluir atividade
+app.post('/atividades/excluir/:id', async (req, res) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        await conn.query("DELETE FROM tb_atividades WHERE id = ?", [req.params.id]);
+        res.redirect('/formulario_atividades');
+    } catch (err) {
+        console.error("Erro ao excluir:", err);
+        res.status(500).send('Erro ao excluir atividade.');
+    } finally {
+        if (conn) conn.release();
+    }
+});
 
-        app.listen(PORT, () => {
-            console.log(`Servidor rodando em http://localhost:${PORT}`);
-        });
-    } catch (err) {
-        console.error('Erro fatal: Não foi possível conectar ao banco de dados.');
-        console.error('Verifique as credenciais, o estado do servidor do banco de dados e as permissões.');
-        console.error(err);
-        process.exit(1);
-    } finally {
-        if (conn) conn.release();
-    }
+// Editar atividade (formulário)
+app.get('/atividades/editar/:id', async (req, res) => {
+    let conn;
+    try {
+        conn = await pool.getConnection();
+        const atividade = await conn.query("SELECT * FROM tb_atividades WHERE id = ?", [req.params.id]);
+        res.render('editar_atividade', { atividade: atividade[0] });
+    } catch (err) {
+        console.error("Erro ao buscar atividade:", err);
+        res.status(500).send('Erro ao buscar atividade.');
+    } finally {
+        if (conn) conn.release();
+    }
+});
+
+// Salvar edição
+app.post('/atividades/editar/:id', async (req, res) => {
+    let conn;
+    try {
+        const { data, nome, principais_realizacoes, projeto, detalhamento } = req.body;
+        conn = await pool.getConnection();
+
+        await conn.query(`
+            UPDATE tb_atividades
+            SET Data=?, Nome=?, \`Principais Realizações\`=?, Projeto=?, Detalhamento=?
+            WHERE id=?
+        `, [data, nome, principais_realizacoes, projeto, detalhamento, req.params.id]);
+
+        res.redirect('/formulario_atividades');
+    } catch (err) {
+        console.error("Erro ao atualizar atividade:", err);
+        res.status(500).send('Erro ao atualizar atividade.');
+    } finally {
+        if (conn) conn.release();
+    }
+});
+
+
+// --- Rota de Exportação de Excel (Ajustada e Unificada) ---
+
+app.get('/exportar-excel', async (req, res) => {
+    let conn;
+    try {
+        const { nome_usuario, data_inicio, data_fim } = req.query;
+
+        let sql = 'SELECT * FROM tb_atividades WHERE 1=1';
+        const params = [];
+
+        if (nome_usuario) {
+            sql += ' AND Nome LIKE ?';
+            params.push(`%${nome_usuario}%`);
+        }
+
+        if (data_inicio) {
+            sql += ' AND Data >= ?';
+            params.push(data_inicio);
+        }
+
+        if (data_fim) {
+            sql += ' AND Data <= ?';
+            params.push(data_fim);
+        }
+        
+        sql += ' ORDER BY Data DESC';
+
+        conn = await pool.getConnection();
+        const atividades = await conn.query(sql, params);
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Atividades');
+
+        const colunas = [
+            'ID',
+            'Data',
+            'Nome',
+            'Principais Realizações',
+            'Projeto',
+            'Detalhamento'
+        ];
+        worksheet.addRow(colunas);
+
+        atividades.forEach(atividade => {
+            worksheet.addRow([
+                atividade.id,
+                atividade.Data.toLocaleDateString('pt-BR'), // Esta linha foi alterada
+                atividade.Nome,
+                atividade['Principais Realizações'],
+                atividade.Projeto,
+                atividade.Detalhamento
+            ]);
+        });
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename="relatorio-atividades.xlsx"');
+
+        await workbook.xlsx.write(res);
+        res.end();
+
+    } catch (err) {
+        console.error("Erro ao gerar arquivo Excel:", err);
+        res.status(500).send('Erro ao gerar relatório.');
+    } finally {
+        if (conn) conn.release();
+    }
+});
+
+
+
+
+
+// --- Inicialização ---
+async function startServer() {
+    let conn;
+    try {
+        console.log('Tentando conectar ao banco de dados...');
+        conn = await pool.getConnection();
+        console.log('Conexão com o MariaDB bem-sucedida!');
+
+        app.listen(PORT, () => {
+            console.log(`Servidor rodando em http://localhost:${PORT}`);
+        });
+    } catch (err) {
+        console.error('Erro fatal: Não foi possível conectar ao banco de dados.');
+        console.error(err);
+        process.exit(1);
+    } finally {
+        if (conn) conn.release();
+    }
 }
 
 startServer();
-

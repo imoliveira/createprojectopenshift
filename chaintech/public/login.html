@@ -4,18 +4,23 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/login.css">
 </head>
 <body>
-    <h1>Login</h1>
-    <form action="/login" method="POST">
-        <label for="username">Usuário:</label>
-        <input type="text" id="username" name="username" required>
-        <br><br>
-        <label for="password">Senha:</label>
-        <input type="password" id="password" name="password" required>
-        <br><br>
-        <button type="submit">Entrar</button>
-    </form>
+    <div class="login-page-container">
+        <div class="login-card">
+            <h1>Login</h1>
+            <form action="/login" method="POST">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" name="username" required>
+
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit" class="main-button">Entrar</button>
+            </form>
+            <a href="#" class="voltar-link">Esqueceu a senha procure o gestor da área</a>
+        </div>
+    </div>
 </body>
 </html>
-

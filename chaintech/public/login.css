@@ -1,0 +1,61 @@
+/* ------------------------------------------------------------------ */
+/* Estilos da Página de Login (Centralizada) */
+/* ------------------------------------------------------------------ */
+/* ------------------------------------------------------------------ */
+/* Estilos da Página de Login (Centralizada com Imagem de Fundo) */
+/* ------------------------------------------------------------------ */
+.login-page-container {
+    /* Centraliza o conteúdo vertical e horizontalmente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    /* Estilos para a imagem de fundo */
+    background-image: url('/images/ChainTech.JPG');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.login-card {
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo branco com transparência para ler o texto */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+}
+
+/* ... o restante do seu login.css continua aqui ... */
+.login-card {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-card .voltar-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-card .voltar-link:hover {
+    text-decoration: underline;
+}
+
+/* Você pode adicionar os estilos de h1, input e botões aqui também, ou mantê-los no styles.css */

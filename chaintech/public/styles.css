@@ -1,126 +1,271 @@
+/* ------------------------------------------------------------------ */
+/* Paleta de Cores e Estilos Globais */
+/* ------------------------------------------------------------------ */
+:root {
+    --primary-blue: #005A9C;
+    --accent-blue: #0077C0;
+    --dark-gray: #333333;
+    --light-gray: #F5F5F5;
+    --border-gray: #E0E0E0;
+    --hover-gray: #F0F0F0;
+    --red: #e74c3c;
+    --red-dark: #c0392b;
+}
+
 body {
-    /* Paleta de Cores do design
-       --primary-blue: #005A9C;
-       --accent-blue: #0077C0;
-       --light-gray: #F5F5F5;
-       --dark-gray: #333333;
-    */
     font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: var(--light-gray, #F5F5F5);
-    color: var(--dark-gray, #333333);
+    color: var(--dark-gray);
     margin: 0;
-    padding: 20px;
-    
-    /* Configurações para centralização */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Centraliza verticalmente */
-    align-items: center; /* Centraliza horizontalmente */
-    min-height: 100vh; /* Garante que o corpo ocupe toda a altura da tela */
+    padding: 0;
+    background-color: var(--light-gray);
 }
 
-/* O restante do seu arquivo styles.css continua aqui... */
 h1 {
-    color: var(--primary-blue, #005A9C);
-    margin-bottom: 20px;
+    color: var(--primary-blue);
+    margin: 40px auto 20px;
+    text-align: center;
+    font-size: 2.5em;
+    font-weight: 300;
 }
 
-form {
-    background-color: #fff;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    text-align: left;
+h2 {
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: 400;
 }
 
-label {
-    font-weight: 600;
-    color: var(--dark-gray, #333333);
-    margin-bottom: 5px;
-}
-
+/* Botões e Inputs Padrão */
 input[type="text"],
 input[type="date"],
 input[type="password"],
 textarea {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-sizing: border-box;
+    border: 1px solid var(--border-gray);
+    border-radius: 8px;
     font-size: 16px;
+    box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 input:focus,
 textarea:focus {
-    border-color: var(--accent-blue, #0077C0);
+    border-color: var(--accent-blue);
     box-shadow: 0 0 0 2px rgba(0, 119, 192, 0.2);
     outline: none;
 }
 
-button[type="submit"] {
-    background-color: var(--accent-blue, #0077C0);
+.main-button {
+    background-color: var(--accent-blue);
     color: white;
-    font-size: 18px;
-    padding: 12px;
+    font-size: 16px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
     margin-top: 10px;
-    transition: background-color 0.3s;
-}
-
-button[type="submit"]:hover {
-    background-color: #005A9C;
-}
-
-a {
     text-decoration: none;
-    color: var(--accent-blue, #0077C0);
+    text-align: center;
+    display: block;
+    width: 100%;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.main-button:hover {
+    background-color: var(--primary-blue);
+    transform: translateY(-1px);
+}
+
+/* ------------------------------------------------------------------ */
+/* Estilos da Página de Cadastro (Formulário + Tabela) */
+/* ------------------------------------------------------------------ */
+.cadastro-flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 25px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.card {
+    flex: 1 1 450px;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.formulario-atividade form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.formulario-atividade .voltar-link {
+    display: block;
+    text-align: center;
     margin-top: 20px;
+    color: var(--accent-blue);
+    text-decoration: none;
     font-weight: 600;
 }
 
-.success-panel {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    padding: 40px;
-    margin-top: 20px;
-    width: 100%;
-    max-width: 600px;
+.formulario-atividade .voltar-link:hover {
+    text-decoration: underline;
 }
 
-.success-panel h2 {
-    color: var(--primary-blue, #005A9C);
+/* Estilos para o formulário de filtro da tabela */
+.relatorio-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
     margin-bottom: 20px;
 }
 
-.success-panel p {
-    font-size: 1.1em;
-    margin: 10px 0;
-    text-align: left;
+.filtro-relatorio {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
 }
 
-.success-panel strong {
-    color: var(--accent-blue, #0077C0);
+.filtro-relatorio label,
+.filtro-relatorio input[type="text"],
+.filtro-relatorio input[type="date"],
+.filtro-relatorio button {
+    flex: 1 1 auto;
 }
 
-.success-panel a {
-    background-color: var(--accent-blue, #0077C0);
+.filtro-relatorio input[type="text"] {
+    min-width: 120px;
+}
+
+.filtro-relatorio input[type="date"] {
+    /* Ajuste para que o campo de data seja menor */
+    max-width: 150px;
+}
+
+.excel-button {
+    background-color: var(--accent-blue);
     color: white;
-    padding: 12px 24px;
+    font-size: 14px;
+    padding: 8px 16px;
+    border: none;
     border-radius: 6px;
-    font-weight: bold;
-    display: inline-block;
-    margin-top: 30px;
     text-decoration: none;
+    text-align: center;
+    display: block;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+.excel-button:hover {
+    background-color: var(--primary-blue);
 }
 
+
+/* Estilos da Tabela de Cadastros */
+.lista-cadastros table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+    border: 1px solid var(--border-gray);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.lista-cadastros th,
+.lista-cadastros td {
+    border: 1px solid var(--border-gray);
+    padding: 12px 8px;
+    text-align: left;
+    vertical-align: middle;
+    word-wrap: break-word;
+}
+
+.lista-cadastros th {
+    background-color: var(--hover-gray);
+    color: var(--dark-gray);
+    font-weight: 600;
+}
+
+.lista-cadastros tr:hover {
+    background-color: var(--hover-gray);
+}
+
+/* Container para os botões de ação para alinhamento */
+.lista-cadastros .btn-container {
+    display: flex;
+    gap: 5px;
+}
+
+/* Estilo para os botões de ação (link e button) */
+.lista-cadastros .btn-acao {
+    display: inline-block;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    box-sizing: border-box;
+}
+
+.lista-cadastros .btn-editar {
+    background-color: var(--accent-blue);
+    color: white;
+    min-width: 60px;
+}
+
+.lista-cadastros .btn-excluir {
+    background-color: var(--red);
+    color: white;
+    min-width: 60px;
+}
+
+.lista-cadastros .btn-editar:hover {
+    background-color: var(--primary-blue);
+}
+.lista-cadastros .btn-excluir:hover {
+    background-color: var(--red-dark);
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsividade */
+/* ------------------------------------------------------------------ */
+@media (max-width: 992px) {
+    .cadastro-flex-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .card {
+        flex: none;
+        width: 100%;
+        min-width: unset;
+    }
+}
+
+@media (max-width: 600px) {
+    .filtro-relatorio {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filtro-relatorio label,
+    .filtro-relatorio input,
+    .filtro-relatorio button {
+        width: 100%;
+    }
+    .filtro-relatorio input[type="text"],
+    .filtro-relatorio input[type="date"] {
+        max-width: 100%;
+    }
+}

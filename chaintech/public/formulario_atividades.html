@@ -1,31 +1,52 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro de Atividade</title>
+    <title>Cadastro de Atividades</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <h1>Cadastrar Nova Atividade</h1>
-    <form action="/atividades" method="POST">
-        <label for="data">Data:</label>
-        <input type="date" id="data" name="data" required>
-        <br><br>
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required>
-        <br><br>
-        <label for="principais_realizacoes">Principais Realizações:</label>
-        <textarea id="principais_realizacoes" name="principais_realizacoes" rows="4" required></textarea>
-        <br><br>
-        <label for="projeto">Projeto:</label>
-        <input type="text" id="projeto" name="projeto" required>
-        <br><br>
-        <label for="detalhamento">Detalhamento:</label>
-        <textarea id="detalhamento" name="detalhamento" rows="6"></textarea>
-        <br><br>
-        <button type="submit">Cadastrar</button>
-    </form>
-    <br>
-    <a href="/">Voltar para o login</a>
+
+    <div class="container">
+        
+        <!-- Formulário -->
+        <div class="card formulario">
+            <h1>Cadastrar Novas Atividades</h1>
+            <form action="/atividades" method="POST">
+                
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" required>
+
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+
+                <label for="realizacoes">Principais Realizações:</label>
+                <textarea id="realizacoes" name="realizacoes" rows="3" required></textarea>
+
+                <label for="projeto">Projeto:</label>
+                <input type="text" id="projeto" name="projeto" required>
+
+                <label for="detalhamento">Detalhamento:</label>
+                <textarea id="detalhamento" name="detalhamento" rows="4"></textarea>
+
+                <button type="submit">Salvar</button>
+            </form>
+        </div>
+
+        <!-- Lista de Cadastros -->
+        <div class="card lista-cadastros">
+                        <td>
+                            <a href="/atividades/2/editar">Editar</a>
+                            <a href="/atividades/2/excluir" onclick="return confirm('Excluir este registro?')">Excluir</a>
+                        </td>
+                    </tr>
+                    <!-- Aqui o servidor vai renderizar mais linhas -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
 </body>
 </html>
 
